@@ -12,7 +12,7 @@
     "declaration": false,
     "baseUrl": ".",
     "paths": {
-      "@scom-stepper/*": ["src/*"]
+      "@scom-flow/*": ["src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

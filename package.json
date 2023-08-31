@@ -1,5 +1,5 @@
 {
-  "name": "@scom/scom-stepper",
+  "name": "@scom/scom-flow",
   "version": "0.1.0",
   "main": "dist/index.js",
   "plugin": "dist",

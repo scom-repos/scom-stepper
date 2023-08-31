@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@scom/dapp": "*",
-    "@scom/scom-stepper": "*"
+    "@scom/scom-flow": "*"
   },
   "menus": [
     {

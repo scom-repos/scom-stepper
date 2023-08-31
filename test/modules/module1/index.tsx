@@ -1,10 +1,10 @@
 import { Module, customModule, Container } from '@ijstech/components';
-import ScomStepper from '@scom/scom-stepper';
+import ScomFlow from '@scom/scom-flow';
 
 @customModule
 export default class Module1 extends Module {
     private _steps: any[] = []
-    private stepper: ScomStepper
+    private stepper: ScomFlow
     constructor(parent?: Container, options?: any) {
         super(parent, options);
         this._steps = [
@@ -30,7 +30,7 @@ export default class Module1 extends Module {
 
     render() {
         return <i-panel margin={{left: '1rem', top: '1rem'}}>
-            <i-scom-stepper
+            <i-scom-flow
                 id="stepper"
                 steps={this._steps}
                 onChanged={this.onStepperChanged.bind(this)}

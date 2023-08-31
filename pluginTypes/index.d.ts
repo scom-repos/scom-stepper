@@ -1,40 +1,40 @@
-/// <amd-module name="@scom/scom-stepper/index.css.ts" />
-declare module "@scom/scom-stepper/index.css.ts" {
+/// <amd-module name="@scom/scom-flow/index.css.ts" />
+declare module "@scom/scom-flow/index.css.ts" {
     export const stepperStyle: string;
 }
-/// <amd-module name="@scom/scom-stepper/interface.ts" />
-declare module "@scom/scom-stepper/interface.ts" {
-    export interface IStepperItem {
+/// <amd-module name="@scom/scom-flow/interface.ts" />
+declare module "@scom/scom-flow/interface.ts" {
+    export interface IItem {
         name: string;
     }
     export interface IStepper {
-        steps: IStepperItem[];
+        steps: IItem[];
     }
 }
-/// <amd-module name="@scom/scom-stepper" />
-declare module "@scom/scom-stepper" {
+/// <amd-module name="@scom/scom-flow" />
+declare module "@scom/scom-flow" {
     import { Control, ControlElement, Module } from '@ijstech/components';
-    import { IStepperItem } from "@scom/scom-stepper/interface.ts";
-    interface ScomStepperElement extends ControlElement {
-        steps?: IStepperItem[];
+    import { IItem } from "@scom/scom-flow/interface.ts";
+    interface ScomFlowElement extends ControlElement {
+        steps?: IItem[];
         activeStep?: number;
         onChanged?: (target: Control, activeStep: number) => void;
     }
     global {
         namespace JSX {
             interface IntrinsicElements {
-                ['i-scom-stepper']: ScomStepperElement;
+                ['i-scom-flow']: ScomFlowElement;
             }
         }
     }
-    export default class ScomStepper extends Module {
+    export default class ScomFlow extends Module {
         private pnlStepper;
         private _activeStep;
         private _steps;
         onChanged: (target: Control, activeStep: number) => void;
         get activeStep(): number;
         set activeStep(step: number);
-        set steps(value: IStepperItem[]);
+        set steps(value: IItem[]);
         previous(): void;
         next(): void;
         private _updateStep;

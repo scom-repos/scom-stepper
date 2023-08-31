@@ -8,12 +8,12 @@ import {
   VStack,
 } from '@ijstech/components';
 import { stepperStyle } from './index.css';
-import { IStepperItem } from './interface';
+import { IItem } from './interface';
 
 const Theme = Styles.Theme.ThemeVars;
 
-interface ScomStepperElement extends ControlElement {
-  steps?: IStepperItem[];
+interface ScomFlowElement extends ControlElement {
+  steps?: IItem[];
   activeStep?: number;
   onChanged?: (target: Control, activeStep: number) => void;
 }
@@ -21,13 +21,13 @@ interface ScomStepperElement extends ControlElement {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      ['i-scom-stepper']: ScomStepperElement;
+      ['i-scom-flow']: ScomFlowElement;
     }
   }
 }
 
-@customElements('i-scom-stepper')
-export default class ScomStepper extends Module {
+@customElements('i-scom-flow')
+export default class ScomFlow extends Module {
   private pnlStepper: HStack;
 
   private _activeStep: number = 0;
@@ -49,7 +49,7 @@ export default class ScomStepper extends Module {
     this._activeStep = step;
   }
 
-  set steps(value: IStepperItem[]) {
+  set steps(value: IItem[]) {
     this.renderSteps(value);
   }
 
@@ -76,7 +76,7 @@ export default class ScomStepper extends Module {
     );
   }
 
-  private renderSteps(steps: IStepperItem[]) {
+  private renderSteps(steps: IItem[]) {
     this.pnlStepper.clearInnerHTML();
     this._steps = [];
     steps.forEach((item, i) => {

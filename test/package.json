@@ -1,5 +1,5 @@
 {
-    "name": "@scom/demo-scom-flow",
+    "name": "@scom/demo-scom-stepper",
     "version": "0.1.0",
     "engines": {
         "node": ">=18.0.0"
@@ -11,7 +11,7 @@
         "@ijstech/cli": "^0.1.28",
         "@ijstech/compiler": "^0.1.22",
         "@scom/dapp": "^0.1.11",
-        "@scom/scom-flow": "file:./ref"
+        "@scom/scom-stepper": "file:./ref"
     },
     "scripts": {
         "cp:libs": "rm -rf ref && mkdir ref && cp ../package.json ref/package.json && cp -r ../dist ref/dist && cp -r ../pluginTypes ref/pluginTypes && cp -r ../pluginTypes ref/types",

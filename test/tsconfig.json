@@ -13,7 +13,7 @@
         "paths": {
             "@ijstech/components": ["node_modules/@ijstech/components"],
             "@modules/*": ["modules/*"],
-            "@scom/scom-flow": ["ref"]
+            "@scom/scom-stepper": ["ref"]
         }
     },
     "include": ["modules/**/*.ts","modules/**/*.tsx"],

@@ -1,7 +1,7 @@
-export interface IItem {
+export interface IStepperItem {
   name: string;
 }
 
 export interface IStepper {
-  steps: IItem[]
+  steps: IStepperItem[]
 }

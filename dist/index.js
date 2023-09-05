@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define("@scom/scom-flow/index.css.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_1) {
+define("@scom/scom-stepper/index.css.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.stepperStyle = void 0;
@@ -27,15 +27,15 @@ define("@scom/scom-flow/index.css.ts", ["require", "exports", "@ijstech/componen
         }
     });
 });
-define("@scom/scom-flow/interface.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-stepper/interface.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
-define("@scom/scom-flow", ["require", "exports", "@ijstech/components", "@scom/scom-flow/index.css.ts"], function (require, exports, components_2, index_css_1) {
+define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@scom/scom-stepper/index.css.ts"], function (require, exports, components_2, index_css_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const Theme = components_2.Styles.Theme.ThemeVars;
-    let ScomFlow = class ScomFlow extends components_2.Module {
+    let ScomStepper = class ScomStepper extends components_2.Module {
         constructor() {
             super(...arguments);
             this._activeStep = 0;
@@ -109,8 +109,8 @@ define("@scom/scom-flow", ["require", "exports", "@ijstech/components", "@scom/s
             return this.$render("i-hstack", { id: "pnlStepper", class: index_css_1.stepperStyle, position: "relative" });
         }
     };
-    ScomFlow = __decorate([
-        (0, components_2.customElements)('i-scom-flow')
-    ], ScomFlow);
-    exports.default = ScomFlow;
+    ScomStepper = __decorate([
+        (0, components_2.customElements)('i-scom-stepper')
+    ], ScomStepper);
+    exports.default = ScomStepper;
 });

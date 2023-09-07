@@ -12,7 +12,10 @@ export default class Module1 extends Module {
                 name: "General Information"
             },
             {
-                name: "Commission Offer"
+                name: "Commission Offer",
+                icon: {
+                    name: 'check'
+                }
             },
             {
                 name: "Widget Properties"
@@ -24,17 +27,20 @@ export default class Module1 extends Module {
         console.log(this.stepper.activeStep)
     }
 
-    async init() {
+    init() {
         super.init();
+        setTimeout(() => {
+            this.stepper.updateStatus(0, true)
+        }, 3000)
     }
 
     render() {
-        return <i-panel margin={{left: '1rem', top: '1rem'}}>
+        return <i-vstack margin={{left: '1rem', top: '1rem'}}>
             <i-scom-stepper
                 id="stepper"
                 steps={this._steps}
                 onChanged={this.onStepperChanged.bind(this)}
             />
-        </i-panel>
+        </i-vstack>
     }
 }

@@ -4,7 +4,6 @@ import {
   ControlElement,
   customElements,
   HStack,
-  Icon,
   Module,
   Styles,
   VStack,
@@ -18,7 +17,9 @@ const Theme = Styles.Theme.ThemeVars;
 interface ScomStepperElement extends ControlElement {
   steps?: IStepperItem[];
   activeStep?: number;
+  finishCaption?: string;
   onChanged?: (target: Control, activeStep: number) => void;
+  onDone?: (target: Control) => void;
 }
 
 declare global {
@@ -38,9 +39,11 @@ export default class ScomStepper extends Module {
 
   private _activeStep: number = 0;
   private _steps: IStepperItem[] = [];
+  private _finishCaption: string = '';
   private state: State;
 
   public onChanged: (target: Control, activeStep: number) => void;
+  public onDone: (target: Control) => void;
   tag: any = {};
 
   get activeStep(): number {
@@ -64,7 +67,8 @@ export default class ScomStepper extends Module {
     this._activeStep = step;
     this.state.activeStep = step;
     if (this.btnNext) {
-      this.btnNext.visible = this.activeStep < this.steps.length - 1;
+      this.btnNext.visible = this.activeStep < this.steps.length;
+      if (this.btnNext.visible) this.updateButtonText();
     }
     if (this.btnPrev) {
       this.btnPrev.visible = this.activeStep > 0 && this.steps.length > 1;
@@ -78,6 +82,22 @@ export default class ScomStepper extends Module {
     this._steps = value;
     this.state.steps = value;
     this.renderSteps(value);
+  }
+
+  get finishCaption() {
+    return this._finishCaption ?? '';
+  }
+  set finishCaption(value: string) {
+    this._finishCaption = value ?? '';
+  }
+
+  private get isFinalStep() {
+    return this.activeStep === this.steps.length - 1;
+  }
+
+  private updateButtonText() {
+    const finishCaption = this.isFinalStep && this.finishCaption;
+    this.btnNext.caption = finishCaption || 'Next';
   }
 
   setTag(value: any) {
@@ -117,15 +137,19 @@ export default class ScomStepper extends Module {
 
   private onNext() {
     if (this.state.checkStep()) {
-      this._updateStep(this.activeStep + 1);
-      if (this.activeStep > this.state.furthestStepIndex) {
-        this.state.furthestStepIndex = this.activeStep;
+      if (this.isFinalStep) {
+        if (this.onDone) this.onDone(this);
+      } else {
+        this._updateStep(this.activeStep + 1);
+        if (this.activeStep > this.state.furthestStepIndex) {
+          this.state.furthestStepIndex = this.activeStep;
+        }
       }
     }
   }
 
   private onStepChanged(index: number) {
-    if (index > this.state.furthestStepIndex) return;
+    if (index > this.state.furthestStepIndex && !this.state.checkStep()) return;
     this._updateStep(index);
   }
 
@@ -206,10 +230,12 @@ export default class ScomStepper extends Module {
     super.init();
     this.state = new State({activeStep: 0, steps: []});
     this.onChanged = this.getAttribute('onChanged', true) || this.onChanged;
+    this.onDone = this.getAttribute('onDone', true) || this.onDone;
     const steps = this.getAttribute('steps', true);
     if (steps) this.steps = steps;
     const activeStep = this.getAttribute('activeStep', true);
     if (activeStep !== undefined) this.activeStep = activeStep;
+    this.finishCaption = this.getAttribute('finishCaption', true, '');
   }
 
   render() {

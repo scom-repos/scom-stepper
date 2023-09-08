@@ -59,7 +59,9 @@ declare module "@scom/scom-stepper" {
     interface ScomStepperElement extends ControlElement {
         steps?: IStepperItem[];
         activeStep?: number;
+        finishCaption?: string;
         onChanged?: (target: Control, activeStep: number) => void;
+        onDone?: (target: Control) => void;
     }
     global {
         namespace JSX {
@@ -75,13 +77,19 @@ declare module "@scom/scom-stepper" {
         private btnNext;
         private _activeStep;
         private _steps;
+        private _finishCaption;
         private state;
         onChanged: (target: Control, activeStep: number) => void;
+        onDone: (target: Control) => void;
         tag: any;
         get activeStep(): number;
         set activeStep(step: number);
         get steps(): IStepperItem[];
         set steps(value: IStepperItem[]);
+        get finishCaption(): string;
+        set finishCaption(value: string);
+        private get isFinalStep();
+        private updateButtonText;
         setTag(value: any): void;
         private updateStyle;
         private updateTheme;

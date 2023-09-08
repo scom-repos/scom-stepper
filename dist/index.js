@@ -114,7 +114,7 @@ define("@scom/scom-stepper/global/state.ts", ["require", "exports"], function (r
                 step.active = value;
         }
         checkStep() {
-            return this.activeStep < this._steps.length - 1 && this.getCompleted(this.activeStep);
+            return this.activeStep < this._steps.length && this.getCompleted(this.activeStep);
         }
         checkDone() {
             return this.steps.every(step => step.completed);
@@ -137,6 +137,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             super(...arguments);
             this._activeStep = 0;
             this._steps = [];
+            this._finishCaption = '';
             this.tag = {};
         }
         get activeStep() {
@@ -163,7 +164,9 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             this._activeStep = step;
             this.state.activeStep = step;
             if (this.btnNext) {
-                this.btnNext.visible = this.activeStep < this.steps.length - 1;
+                this.btnNext.visible = this.activeStep < this.steps.length;
+                if (this.btnNext.visible)
+                    this.updateButtonText();
             }
             if (this.btnPrev) {
                 this.btnPrev.visible = this.activeStep > 0 && this.steps.length > 1;
@@ -177,6 +180,20 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             this._steps = value;
             this.state.steps = value;
             this.renderSteps(value);
+        }
+        get finishCaption() {
+            var _a;
+            return (_a = this._finishCaption) !== null && _a !== void 0 ? _a : '';
+        }
+        set finishCaption(value) {
+            this._finishCaption = value !== null && value !== void 0 ? value : '';
+        }
+        get isFinalStep() {
+            return this.activeStep === this.steps.length - 1;
+        }
+        updateButtonText() {
+            const finishCaption = this.isFinalStep && this.finishCaption;
+            this.btnNext.caption = finishCaption || 'Next';
         }
         setTag(value) {
             this.tag = value;
@@ -212,14 +229,20 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
         }
         onNext() {
             if (this.state.checkStep()) {
-                this._updateStep(this.activeStep + 1);
-                if (this.activeStep > this.state.furthestStepIndex) {
-                    this.state.furthestStepIndex = this.activeStep;
+                if (this.isFinalStep) {
+                    if (this.onDone)
+                        this.onDone(this);
+                }
+                else {
+                    this._updateStep(this.activeStep + 1);
+                    if (this.activeStep > this.state.furthestStepIndex) {
+                        this.state.furthestStepIndex = this.activeStep;
+                    }
                 }
             }
         }
         onStepChanged(index) {
-            if (index > this.state.furthestStepIndex)
+            if (index > this.state.furthestStepIndex && !this.state.checkStep())
                 return;
             this._updateStep(index);
         }
@@ -266,12 +289,14 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             super.init();
             this.state = new global_1.State({ activeStep: 0, steps: [] });
             this.onChanged = this.getAttribute('onChanged', true) || this.onChanged;
+            this.onDone = this.getAttribute('onDone', true) || this.onDone;
             const steps = this.getAttribute('steps', true);
             if (steps)
                 this.steps = steps;
             const activeStep = this.getAttribute('activeStep', true);
             if (activeStep !== undefined)
                 this.activeStep = activeStep;
+            this.finishCaption = this.getAttribute('finishCaption', true, '');
         }
         render() {
             return (this.$render("i-vstack", { gap: "1rem" },

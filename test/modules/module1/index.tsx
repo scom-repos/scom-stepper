@@ -27,19 +27,27 @@ export default class Module1 extends Module {
         console.log(this.stepper.activeStep)
     }
 
+    private onCompleted() {
+        console.log('Finish')
+    }
+
     init() {
         super.init();
         setTimeout(() => {
             this.stepper.updateStatus(0, true)
-        }, 3000)
+            this.stepper.updateStatus(1, true)
+            this.stepper.updateStatus(2, true)
+        }, 500)
     }
 
     render() {
         return <i-vstack margin={{left: '1rem', top: '1rem'}}>
             <i-scom-stepper
                 id="stepper"
+                finishCaption='Finish'
                 steps={this._steps}
                 onChanged={this.onStepperChanged.bind(this)}
+                onDone={this.onCompleted.bind(this)}
             />
         </i-vstack>
     }

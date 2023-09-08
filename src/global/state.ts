@@ -54,7 +54,7 @@ export class State {
   }
 
   checkStep() {
-    return this.activeStep < this._steps.length - 1 && this.getCompleted(this.activeStep);
+    return this.activeStep < this._steps.length && this.getCompleted(this.activeStep);
   }
 
   checkDone() {

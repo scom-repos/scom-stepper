@@ -19,6 +19,7 @@ interface ScomStepperElement extends ControlElement {
   activeStep?: number;
   finishCaption?: string;
   onChanged?: (target: Control, activeStep: number) => void;
+  onBeforeNext?: (target: Control, activeStep: number) => Promise<void>;
   onDone?: (target: Control) => void;
 }
 
@@ -43,6 +44,7 @@ export default class ScomStepper extends Module {
   private state: State;
 
   public onChanged: (target: Control, activeStep: number) => void;
+  public onBeforeNext: (target: Control, activeStep: number) => Promise<void>;
   public onDone: (target: Control) => void;
   tag: any = {};
 
@@ -50,7 +52,6 @@ export default class ScomStepper extends Module {
     return this._activeStep ?? 0;
   }
   set activeStep(step: number) {
-    if (this._activeStep === step) return;
     if (this.stepElms && this.stepElms.length) {
       const maxValue = Math.max(this._activeStep, step);
       for (let i = maxValue; i >= 0; i--) {
@@ -135,7 +136,10 @@ export default class ScomStepper extends Module {
     this._updateStep(this.activeStep - 1);
   }
 
-  private onNext() {
+  private async onNext() {
+    if (this.onBeforeNext) {
+      await this.onBeforeNext(this, this.activeStep);
+    }
     if (this.state.checkStep()) {
       if (this.isFinalStep) {
         if (this.onDone) this.onDone(this);
@@ -189,7 +193,7 @@ export default class ScomStepper extends Module {
       const divider = i > 0 ? this.renderDivider() : [];
       const step = (
         <i-vstack
-          class={'step' + (i == this.activeStep ? ' --active' : '')}
+          class={'step'}
           position="relative"
           padding={{ left: '0.5rem', right: '0.5rem' }}
           stack={{ grow: '1', shrink: '1', basis: '0%' }}
@@ -223,6 +227,7 @@ export default class ScomStepper extends Module {
       this.pnlStepper.append(step);
       this.stepElms.push(step);
     });
+    this.activeStep = this.state.activeStep;
   }
 
   init() {
@@ -230,6 +235,7 @@ export default class ScomStepper extends Module {
     super.init();
     this.state = new State({activeStep: 0, steps: []});
     this.onChanged = this.getAttribute('onChanged', true) || this.onChanged;
+    this.onBeforeNext = this.getAttribute('onBeforeNext', true) || this.onBeforeNext;
     this.onDone = this.getAttribute('onDone', true) || this.onDone;
     const steps = this.getAttribute('steps', true);
     if (steps) this.steps = steps;

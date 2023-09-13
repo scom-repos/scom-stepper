@@ -61,6 +61,7 @@ declare module "@scom/scom-stepper" {
         activeStep?: number;
         finishCaption?: string;
         onChanged?: (target: Control, activeStep: number) => void;
+        onBeforeNext?: (target: Control, activeStep: number) => Promise<void>;
         onDone?: (target: Control) => void;
     }
     global {
@@ -80,6 +81,7 @@ declare module "@scom/scom-stepper" {
         private _finishCaption;
         private state;
         onChanged: (target: Control, activeStep: number) => void;
+        onBeforeNext: (target: Control, activeStep: number) => Promise<void>;
         onDone: (target: Control) => void;
         tag: any;
         get activeStep(): number;

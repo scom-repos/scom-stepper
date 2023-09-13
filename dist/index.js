@@ -145,8 +145,6 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             return (_a = this._activeStep) !== null && _a !== void 0 ? _a : 0;
         }
         set activeStep(step) {
-            if (this._activeStep === step)
-                return;
             if (this.stepElms && this.stepElms.length) {
                 const maxValue = Math.max(this._activeStep, step);
                 for (let i = maxValue; i >= 0; i--) {
@@ -227,7 +225,10 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 return;
             this._updateStep(this.activeStep - 1);
         }
-        onNext() {
+        async onNext() {
+            if (this.onBeforeNext) {
+                await this.onBeforeNext(this, this.activeStep);
+            }
             if (this.state.checkStep()) {
                 if (this.isFinalStep) {
                     if (this.onDone)
@@ -274,7 +275,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             this.stepElms = [];
             steps.forEach((item, i) => {
                 const divider = i > 0 ? this.renderDivider() : [];
-                const step = (this.$render("i-vstack", { class: 'step' + (i == this.activeStep ? ' --active' : ''), position: "relative", padding: { left: '0.5rem', right: '0.5rem' }, stack: { grow: '1', shrink: '1', basis: '0%' }, horizontalAlignment: "center", gap: "1rem", onClick: () => this.onStepChanged(i) },
+                const step = (this.$render("i-vstack", { class: 'step', position: "relative", padding: { left: '0.5rem', right: '0.5rem' }, stack: { grow: '1', shrink: '1', basis: '0%' }, horizontalAlignment: "center", gap: "1rem", onClick: () => this.onStepChanged(i) },
                     divider,
                     this.$render("i-panel", null,
                         this.$render("i-hstack", { class: "step-icon", width: "2rem", height: "2rem", background: { color: Theme.action.disabled }, border: { radius: '50%' }, horizontalAlignment: "center", verticalAlignment: "center" }, this.renderIcon(item.icon, i))),
@@ -283,12 +284,14 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 this.pnlStepper.append(step);
                 this.stepElms.push(step);
             });
+            this.activeStep = this.state.activeStep;
         }
         init() {
             this._updateStep = this._updateStep.bind(this);
             super.init();
             this.state = new global_1.State({ activeStep: 0, steps: [] });
             this.onChanged = this.getAttribute('onChanged', true) || this.onChanged;
+            this.onBeforeNext = this.getAttribute('onBeforeNext', true) || this.onBeforeNext;
             this.onDone = this.getAttribute('onDone', true) || this.onDone;
             const steps = this.getAttribute('steps', true);
             if (steps)

@@ -21,6 +21,7 @@ interface ScomStepperElement extends ControlElement {
   onChanged?: (target: Control, activeStep: number) => void;
   onBeforeNext?: (target: Control, activeStep: number) => Promise<void>;
   onDone?: (target: Control) => void;
+  showNavButtons?: boolean;
 }
 
 declare global {
@@ -41,6 +42,7 @@ export default class ScomStepper extends Module {
   private _activeStep: number = 0;
   private _steps: IStepperItem[] = [];
   private _finishCaption: string = '';
+  private _showNavButtons: boolean = true;
   private state: State;
 
   public onChanged: (target: Control, activeStep: number) => void;
@@ -67,12 +69,14 @@ export default class ScomStepper extends Module {
     }
     this._activeStep = step;
     this.state.activeStep = step;
-    if (this.btnNext) {
-      this.btnNext.visible = this.activeStep < this.steps.length;
-      if (this.btnNext.visible) this.updateButtonText();
-    }
-    if (this.btnPrev) {
-      this.btnPrev.visible = this.activeStep > 0 && this.steps.length > 1;
+    if (this.showNavButtons) {
+      if (this.btnNext) {
+        this.btnNext.visible = this.activeStep < this.steps.length;
+        if (this.btnNext.visible) this.updateButtonText();
+      }
+      if (this.btnPrev) {
+        this.btnPrev.visible = this.activeStep > 0 && this.steps.length > 1;
+      }
     }
   }
 
@@ -92,13 +96,25 @@ export default class ScomStepper extends Module {
     this._finishCaption = value ?? '';
   }
 
+  get showNavButtons() {
+    return this._showNavButtons ?? true;
+  }
+
+  set showNavButtons(value: boolean) {
+    this._showNavButtons = value ?? true;
+    if (this.btnPrev) this.btnPrev.visible = value;
+    if (this.btnNext) this.btnNext.visible = value;
+  }
+
   private get isFinalStep() {
     return this.activeStep === this.steps.length - 1;
   }
 
   private updateButtonText() {
     const finishCaption = this.isFinalStep && this.finishCaption;
-    this.btnNext.caption = finishCaption || 'Next';
+    if (this.showNavButtons) {
+      this.btnNext.caption = finishCaption || 'Next';
+    }
   }
 
   setTag(value: any) {
@@ -189,6 +205,7 @@ export default class ScomStepper extends Module {
   private renderSteps(steps: IStepperItem[]) {
     this.pnlStepper.clearInnerHTML();
     this.stepElms = [];
+    const isStepIconPanelShown = steps.length > 1;
     steps.forEach((item, i) => {
       const divider = i > 0 ? this.renderDivider() : [];
       const step = (
@@ -202,7 +219,7 @@ export default class ScomStepper extends Module {
           onClick={() => this.onStepChanged(i)}
         >
           {divider}
-          <i-panel>
+          <i-panel visible={isStepIconPanelShown}>
             <i-hstack
               class="step-icon"
               width="2rem"
@@ -242,6 +259,7 @@ export default class ScomStepper extends Module {
     const activeStep = this.getAttribute('activeStep', true);
     if (activeStep !== undefined) this.activeStep = activeStep;
     this.finishCaption = this.getAttribute('finishCaption', true, '');
+    this.showNavButtons = this.getAttribute('showNavButtons', true, true);
   }
 
   render() {

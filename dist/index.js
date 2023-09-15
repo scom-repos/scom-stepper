@@ -138,6 +138,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             this._activeStep = 0;
             this._steps = [];
             this._finishCaption = '';
+            this._showNavButtons = true;
             this.tag = {};
         }
         get activeStep() {
@@ -161,13 +162,15 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             }
             this._activeStep = step;
             this.state.activeStep = step;
-            if (this.btnNext) {
-                this.btnNext.visible = this.activeStep < this.steps.length;
-                if (this.btnNext.visible)
-                    this.updateButtonText();
-            }
-            if (this.btnPrev) {
-                this.btnPrev.visible = this.activeStep > 0 && this.steps.length > 1;
+            if (this.showNavButtons) {
+                if (this.btnNext) {
+                    this.btnNext.visible = this.activeStep < this.steps.length;
+                    if (this.btnNext.visible)
+                        this.updateButtonText();
+                }
+                if (this.btnPrev) {
+                    this.btnPrev.visible = this.activeStep > 0 && this.steps.length > 1;
+                }
             }
         }
         get steps() {
@@ -186,12 +189,25 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
         set finishCaption(value) {
             this._finishCaption = value !== null && value !== void 0 ? value : '';
         }
+        get showNavButtons() {
+            var _a;
+            return (_a = this._showNavButtons) !== null && _a !== void 0 ? _a : true;
+        }
+        set showNavButtons(value) {
+            this._showNavButtons = value !== null && value !== void 0 ? value : true;
+            if (this.btnPrev)
+                this.btnPrev.visible = value;
+            if (this.btnNext)
+                this.btnNext.visible = value;
+        }
         get isFinalStep() {
             return this.activeStep === this.steps.length - 1;
         }
         updateButtonText() {
             const finishCaption = this.isFinalStep && this.finishCaption;
-            this.btnNext.caption = finishCaption || 'Next';
+            if (this.showNavButtons) {
+                this.btnNext.caption = finishCaption || 'Next';
+            }
         }
         setTag(value) {
             this.tag = value;
@@ -273,11 +289,12 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
         renderSteps(steps) {
             this.pnlStepper.clearInnerHTML();
             this.stepElms = [];
+            const isStepIconPanelShown = steps.length > 1;
             steps.forEach((item, i) => {
                 const divider = i > 0 ? this.renderDivider() : [];
                 const step = (this.$render("i-vstack", { class: 'step', position: "relative", padding: { left: '0.5rem', right: '0.5rem' }, stack: { grow: '1', shrink: '1', basis: '0%' }, horizontalAlignment: "center", gap: "1rem", onClick: () => this.onStepChanged(i) },
                     divider,
-                    this.$render("i-panel", null,
+                    this.$render("i-panel", { visible: isStepIconPanelShown },
                         this.$render("i-hstack", { class: "step-icon", width: "2rem", height: "2rem", background: { color: Theme.action.disabled }, border: { radius: '50%' }, horizontalAlignment: "center", verticalAlignment: "center" }, this.renderIcon(item.icon, i))),
                     this.$render("i-panel", { class: "text-center step-label-container", width: "100%" },
                         this.$render("i-label", { class: "step-label", caption: item.name, font: { size: '0.875rem', color: Theme.text.secondary } }))));
@@ -300,6 +317,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             if (activeStep !== undefined)
                 this.activeStep = activeStep;
             this.finishCaption = this.getAttribute('finishCaption', true, '');
+            this.showNavButtons = this.getAttribute('showNavButtons', true, true);
         }
         render() {
             return (this.$render("i-vstack", { gap: "1rem" },

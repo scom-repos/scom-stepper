@@ -63,6 +63,7 @@ declare module "@scom/scom-stepper" {
         onChanged?: (target: Control, activeStep: number) => void;
         onBeforeNext?: (target: Control, activeStep: number) => Promise<void>;
         onDone?: (target: Control) => void;
+        showNavButtons?: boolean;
     }
     global {
         namespace JSX {
@@ -79,6 +80,7 @@ declare module "@scom/scom-stepper" {
         private _activeStep;
         private _steps;
         private _finishCaption;
+        private _showNavButtons;
         private state;
         onChanged: (target: Control, activeStep: number) => void;
         onBeforeNext: (target: Control, activeStep: number) => Promise<void>;
@@ -90,6 +92,8 @@ declare module "@scom/scom-stepper" {
         set steps(value: IStepperItem[]);
         get finishCaption(): string;
         set finishCaption(value: string);
+        get showNavButtons(): boolean;
+        set showNavButtons(value: boolean);
         private get isFinalStep();
         private updateButtonText;
         setTag(value: any): void;

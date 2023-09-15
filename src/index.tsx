@@ -160,20 +160,24 @@ export default class ScomStepper extends Module {
       if (this.isFinalStep) {
         if (this.onDone) this.onDone(this);
       } else {
-        this._updateStep(this.activeStep + 1);
-        if (this.activeStep > this.state.furthestStepIndex) {
-          this.state.furthestStepIndex = this.activeStep;
-        }
+        this._updateIndexs(this.activeStep + 1);
       }
     }
   }
 
   private async onStepChanged(index: number) {
-    if (this.onBeforeNext) {
+    if (this.onBeforeNext && this.activeStep < index) {
       await this.onBeforeNext(this, this.activeStep);
     }
     if (index > this.state.furthestStepIndex && !this.state.checkStep()) return;
-    this._updateStep(index);
+    this._updateIndexs(index);
+  }
+
+  private _updateIndexs(step: number) {
+    this._updateStep(step);
+    if (this.activeStep > this.state.furthestStepIndex) {
+      this.state.furthestStepIndex = this.activeStep;
+    }
   }
 
   private _updateStep(step: number) {

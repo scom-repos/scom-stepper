@@ -103,6 +103,7 @@ declare module "@scom/scom-stepper" {
         private onPrevious;
         private onNext;
         private onStepChanged;
+        private _updateIndexs;
         private _updateStep;
         private renderDivider;
         private renderIcon;

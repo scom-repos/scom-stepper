@@ -251,20 +251,23 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                         this.onDone(this);
                 }
                 else {
-                    this._updateStep(this.activeStep + 1);
-                    if (this.activeStep > this.state.furthestStepIndex) {
-                        this.state.furthestStepIndex = this.activeStep;
-                    }
+                    this._updateIndexs(this.activeStep + 1);
                 }
             }
         }
         async onStepChanged(index) {
-            if (this.onBeforeNext) {
+            if (this.onBeforeNext && this.activeStep < index) {
                 await this.onBeforeNext(this, this.activeStep);
             }
             if (index > this.state.furthestStepIndex && !this.state.checkStep())
                 return;
-            this._updateStep(index);
+            this._updateIndexs(index);
+        }
+        _updateIndexs(step) {
+            this._updateStep(step);
+            if (this.activeStep > this.state.furthestStepIndex) {
+                this.state.furthestStepIndex = this.activeStep;
+            }
         }
         _updateStep(step) {
             this.activeStep = step;

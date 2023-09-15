@@ -258,7 +258,10 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 }
             }
         }
-        onStepChanged(index) {
+        async onStepChanged(index) {
+            if (this.onBeforeNext) {
+                await this.onBeforeNext(this, this.activeStep);
+            }
             if (index > this.state.furthestStepIndex && !this.state.checkStep())
                 return;
             this._updateStep(index);

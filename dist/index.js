@@ -247,8 +247,15 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             }
             if (this.state.checkStep()) {
                 if (this.isFinalStep) {
-                    if (this.onDone)
-                        this.onDone(this);
+                    try {
+                        this.btnNext.rightIcon.spin = true;
+                        this.btnNext.rightIcon.visible = true;
+                        if (this.onDone)
+                            await this.onDone(this);
+                    }
+                    catch (_a) { }
+                    this.btnNext.rightIcon.spin = false;
+                    this.btnNext.rightIcon.visible = false;
                 }
                 else {
                     this._updateIndexs(this.activeStep + 1);

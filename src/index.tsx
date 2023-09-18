@@ -20,7 +20,7 @@ interface ScomStepperElement extends ControlElement {
   finishCaption?: string;
   onChanged?: (target: Control, activeStep: number) => void;
   onBeforeNext?: (target: Control, activeStep: number) => Promise<void>;
-  onDone?: (target: Control) => void;
+  onDone?: (target: Control) => Promise<void>;
   showNavButtons?: boolean;
 }
 
@@ -47,7 +47,7 @@ export default class ScomStepper extends Module {
 
   public onChanged: (target: Control, activeStep: number) => void;
   public onBeforeNext: (target: Control, activeStep: number) => Promise<void>;
-  public onDone: (target: Control) => void;
+  public onDone: (target: Control) => Promise<void>;
   tag: any = {};
 
   get activeStep(): number {
@@ -158,7 +158,13 @@ export default class ScomStepper extends Module {
     }
     if (this.state.checkStep()) {
       if (this.isFinalStep) {
-        if (this.onDone) this.onDone(this);
+        try {
+          this.btnNext.rightIcon.spin = true;
+          this.btnNext.rightIcon.visible = true;
+          if (this.onDone) await this.onDone(this);
+        } catch {}
+        this.btnNext.rightIcon.spin = false;
+        this.btnNext.rightIcon.visible = false;
       } else {
         this._updateIndexs(this.activeStep + 1);
       }

@@ -62,7 +62,7 @@ declare module "@scom/scom-stepper" {
         finishCaption?: string;
         onChanged?: (target: Control, activeStep: number) => void;
         onBeforeNext?: (target: Control, activeStep: number) => Promise<void>;
-        onDone?: (target: Control) => void;
+        onDone?: (target: Control) => Promise<void>;
         showNavButtons?: boolean;
     }
     global {
@@ -84,7 +84,7 @@ declare module "@scom/scom-stepper" {
         private state;
         onChanged: (target: Control, activeStep: number) => void;
         onBeforeNext: (target: Control, activeStep: number) => Promise<void>;
-        onDone: (target: Control) => void;
+        onDone: (target: Control) => Promise<void>;
         tag: any;
         get activeStep(): number;
         set activeStep(step: number);

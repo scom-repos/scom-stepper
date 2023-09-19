@@ -18,9 +18,9 @@ interface ScomStepperElement extends ControlElement {
   steps?: IStepperItem[];
   activeStep?: number;
   finishCaption?: string;
-  onChanged?: (target: Control, activeStep: number) => void;
-  onBeforeNext?: (target: Control, activeStep: number) => Promise<void>;
-  onDone?: (target: Control) => void;
+  onChanged?: (target: Control, lastActiveStep: number) => void;
+  onBeforeNext?: (target: Control, nextStep: number) => Promise<void>;
+  onDone?: (target: Control) => Promise<void>;
   showNavButtons?: boolean;
 }
 
@@ -45,9 +45,9 @@ export default class ScomStepper extends Module {
   private _showNavButtons: boolean = true;
   private state: State;
 
-  public onChanged: (target: Control, activeStep: number) => void;
-  public onBeforeNext: (target: Control, activeStep: number) => Promise<void>;
-  public onDone: (target: Control) => void;
+  public onChanged: (target: Control, lastActiveStep: number) => void;
+  public onBeforeNext: (target: Control, nextStep: number) => Promise<void>;
+  public onDone: (target: Control) => Promise<void>;
   tag: any = {};
 
   get activeStep(): number {
@@ -154,11 +154,17 @@ export default class ScomStepper extends Module {
 
   private async onNext() {
     if (this.onBeforeNext) {
-      await this.onBeforeNext(this, this.activeStep);
+      await this.onBeforeNext(this, this.activeStep + 1);
     }
     if (this.state.checkStep()) {
       if (this.isFinalStep) {
-        if (this.onDone) this.onDone(this);
+        try {
+          this.btnNext.rightIcon.spin = true;
+          this.btnNext.rightIcon.visible = true;
+          if (this.onDone) await this.onDone(this);
+        } catch {}
+        this.btnNext.rightIcon.spin = false;
+        this.btnNext.rightIcon.visible = false;
       } else {
         this._updateIndexs(this.activeStep + 1);
       }
@@ -167,7 +173,7 @@ export default class ScomStepper extends Module {
 
   private async onStepChanged(index: number) {
     if (this.onBeforeNext && this.activeStep < index) {
-      await this.onBeforeNext(this, this.activeStep);
+      await this.onBeforeNext(this, index);
     }
     if (index > this.state.furthestStepIndex && !this.state.checkStep()) return;
     this._updateIndexs(index);
@@ -181,8 +187,9 @@ export default class ScomStepper extends Module {
   }
 
   private _updateStep(step: number) {
+    const oldStep = this._activeStep;
     this.activeStep = step;
-    if (this.onChanged) this.onChanged(this, this.activeStep);
+    if (this.onChanged) this.onChanged(this, oldStep);
   }
 
   private renderDivider() {

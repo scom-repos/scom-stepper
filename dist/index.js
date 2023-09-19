@@ -243,12 +243,19 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
         }
         async onNext() {
             if (this.onBeforeNext) {
-                await this.onBeforeNext(this, this.activeStep);
+                await this.onBeforeNext(this, this.activeStep + 1);
             }
             if (this.state.checkStep()) {
                 if (this.isFinalStep) {
-                    if (this.onDone)
-                        this.onDone(this);
+                    try {
+                        this.btnNext.rightIcon.spin = true;
+                        this.btnNext.rightIcon.visible = true;
+                        if (this.onDone)
+                            await this.onDone(this);
+                    }
+                    catch (_a) { }
+                    this.btnNext.rightIcon.spin = false;
+                    this.btnNext.rightIcon.visible = false;
                 }
                 else {
                     this._updateIndexs(this.activeStep + 1);
@@ -257,7 +264,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
         }
         async onStepChanged(index) {
             if (this.onBeforeNext && this.activeStep < index) {
-                await this.onBeforeNext(this, this.activeStep);
+                await this.onBeforeNext(this, index);
             }
             if (index > this.state.furthestStepIndex && !this.state.checkStep())
                 return;
@@ -270,9 +277,10 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             }
         }
         _updateStep(step) {
+            const oldStep = this._activeStep;
             this.activeStep = step;
             if (this.onChanged)
-                this.onChanged(this, this.activeStep);
+                this.onChanged(this, oldStep);
         }
         renderDivider() {
             return (this.$render("i-panel", { position: "absolute", top: "1rem", left: "calc(-50% + 1rem)", right: "calc(50% + 1rem)" },

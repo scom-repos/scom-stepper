@@ -146,8 +146,14 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             return (_a = this._activeStep) !== null && _a !== void 0 ? _a : 0;
         }
         set activeStep(step) {
-            if (this.stepElms && this.stepElms.length) {
-                const maxValue = Math.max(this._activeStep, step);
+            var _a;
+            const stepsLength = this.steps.length;
+            let maxValue = Math.max(this._activeStep, step);
+            if (maxValue >= stepsLength) {
+                maxValue = 0;
+                step = 0;
+            }
+            if ((_a = this.stepElms) === null || _a === void 0 ? void 0 : _a.length) {
                 for (let i = maxValue; i >= 0; i--) {
                     const el = this.stepElms[i];
                     if (i <= step) {
@@ -180,7 +186,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
         set steps(value) {
             this._steps = value;
             this.state.steps = value;
-            this.renderSteps(value);
+            this.renderSteps();
         }
         get finishCaption() {
             var _a;
@@ -300,11 +306,11 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 return this.$render("i-label", { caption: (index + 1).toString(), font: { size: '0.875rem', color: Theme.text.secondary } });
             }
         }
-        renderSteps(steps) {
+        renderSteps() {
             this.pnlStepper.clearInnerHTML();
             this.stepElms = [];
-            const isStepIconPanelShown = steps.length > 1;
-            steps.forEach((item, i) => {
+            const isStepIconPanelShown = this.steps.length > 1;
+            this.steps.forEach((item, i) => {
                 const divider = i > 0 ? this.renderDivider() : [];
                 const step = (this.$render("i-vstack", { class: 'step', position: "relative", padding: { left: '0.5rem', right: '0.5rem' }, stack: { grow: '1', shrink: '1', basis: '0%' }, horizontalAlignment: "center", gap: "1rem", onClick: () => this.onStepChanged(i) },
                     divider,

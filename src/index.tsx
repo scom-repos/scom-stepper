@@ -54,8 +54,14 @@ export default class ScomStepper extends Module {
     return this._activeStep ?? 0;
   }
   set activeStep(step: number) {
-    if (this.stepElms && this.stepElms.length) {
-      const maxValue = Math.max(this._activeStep, step);
+    const stepsLength = this.steps.length;
+    let maxValue = Math.max(this._activeStep, step);
+    if (maxValue >= stepsLength) {
+      maxValue = 0;
+      step = 0;
+    }
+
+    if (this.stepElms?.length) {
       for (let i = maxValue; i >= 0; i--) {
         const el = this.stepElms[i];
         if (i <= step) {
@@ -86,7 +92,7 @@ export default class ScomStepper extends Module {
   set steps(value: IStepperItem[]) {
     this._steps = value;
     this.state.steps = value;
-    this.renderSteps(value);
+    this.renderSteps();
   }
 
   get finishCaption() {
@@ -216,11 +222,11 @@ export default class ScomStepper extends Module {
     }
   }
 
-  private renderSteps(steps: IStepperItem[]) {
+  private renderSteps() {
     this.pnlStepper.clearInnerHTML();
     this.stepElms = [];
-    const isStepIconPanelShown = steps.length > 1;
-    steps.forEach((item, i) => {
+    const isStepIconPanelShown = this.steps.length > 1;
+    this.steps.forEach((item, i) => {
       const divider = i > 0 ? this.renderDivider() : [];
       const step = (
         <i-vstack

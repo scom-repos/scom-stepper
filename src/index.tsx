@@ -1,5 +1,6 @@
 import {
   Button,
+  Container,
   Control,
   ControlElement,
   customElements,
@@ -49,6 +50,11 @@ export default class ScomStepper extends Module {
   public onBeforeNext: (target: Control, nextStep: number) => Promise<void>;
   public onDone: (target: Control) => Promise<void>;
   tag: any = {};
+
+  constructor(parent?: Container, options?: any) {
+    super(parent, options)
+    this.deferReadyCallback = true;
+  }
 
   get activeStep(): number {
     return this._activeStep ?? 0;
@@ -267,9 +273,10 @@ export default class ScomStepper extends Module {
     this.activeStep = this.state.activeStep;
   }
 
-  init() {
+  async init() {
     this._updateStep = this._updateStep.bind(this);
-    super.init();
+    await super.init();
+    await this.btnNext.ready();
     this.state = new State({activeStep: 0, steps: []});
     this.onChanged = this.getAttribute('onChanged', true) || this.onChanged;
     this.onBeforeNext = this.getAttribute('onBeforeNext', true) || this.onBeforeNext;
@@ -280,6 +287,7 @@ export default class ScomStepper extends Module {
     if (activeStep !== undefined) this.activeStep = activeStep;
     this.finishCaption = this.getAttribute('finishCaption', true, '');
     this.showNavButtons = this.getAttribute('showNavButtons', true, true);
+    this.executeReadyCallback();
   }
 
   render() {

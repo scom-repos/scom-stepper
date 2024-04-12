@@ -54,7 +54,7 @@ declare module "@scom/scom-stepper/global/index.ts" {
 }
 /// <amd-module name="@scom/scom-stepper" />
 declare module "@scom/scom-stepper" {
-    import { Control, ControlElement, Module } from '@ijstech/components';
+    import { Container, Control, ControlElement, Module } from '@ijstech/components';
     import { IStepperItem } from "@scom/scom-stepper/interface.ts";
     interface ScomStepperElement extends ControlElement {
         steps?: IStepperItem[];
@@ -86,6 +86,7 @@ declare module "@scom/scom-stepper" {
         onBeforeNext: (target: Control, nextStep: number) => Promise<void>;
         onDone: (target: Control) => Promise<void>;
         tag: any;
+        constructor(parent?: Container, options?: any);
         get activeStep(): number;
         set activeStep(step: number);
         get steps(): IStepperItem[];
@@ -108,7 +109,7 @@ declare module "@scom/scom-stepper" {
         private renderDivider;
         private renderIcon;
         private renderSteps;
-        init(): void;
+        init(): Promise<void>;
         render(): any;
     }
 }

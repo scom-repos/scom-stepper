@@ -67,13 +67,11 @@ define("@scom/scom-stepper/global/state.ts", ["require", "exports"], function (r
     exports.State = void 0;
     class State {
         constructor(data) {
-            var _a, _b;
-            this._activeStep = (_a = data === null || data === void 0 ? void 0 : data.activeStep) !== null && _a !== void 0 ? _a : 0;
-            this._steps = (_b = data === null || data === void 0 ? void 0 : data.steps) !== null && _b !== void 0 ? _b : [];
+            this._activeStep = data?.activeStep ?? 0;
+            this._steps = data?.steps ?? [];
         }
         get steps() {
-            var _a;
-            return (_a = this._steps) !== null && _a !== void 0 ? _a : [];
+            return this._steps ?? [];
         }
         set steps(value) {
             this._steps = value;
@@ -82,22 +80,19 @@ define("@scom/scom-stepper/global/state.ts", ["require", "exports"], function (r
             return this._steps[this.activeStep];
         }
         get activeStep() {
-            var _a;
-            return (_a = this._activeStep) !== null && _a !== void 0 ? _a : 0;
+            return this._activeStep ?? 0;
         }
         set activeStep(value) {
             this._activeStep = value;
         }
         get furthestStepIndex() {
-            var _a;
-            return (_a = this._furthestStepIndex) !== null && _a !== void 0 ? _a : 0;
+            return this._furthestStepIndex ?? 0;
         }
         set furthestStepIndex(value) {
             this._furthestStepIndex = value;
         }
         getCompleted(index) {
-            var _a, _b;
-            return (_b = (_a = this._steps[index]) === null || _a === void 0 ? void 0 : _a.completed) !== null && _b !== void 0 ? _b : false;
+            return this._steps[index]?.completed ?? false;
         }
         setCompleted(index, value) {
             const step = this._steps[index];
@@ -105,8 +100,7 @@ define("@scom/scom-stepper/global/state.ts", ["require", "exports"], function (r
                 step.completed = value;
         }
         getActive(index) {
-            var _a, _b;
-            return (_b = (_a = this._steps[index]) === null || _a === void 0 ? void 0 : _a.active) !== null && _b !== void 0 ? _b : false;
+            return this._steps[index]?.active ?? false;
         }
         setActive(index, value) {
             const step = this._steps[index];
@@ -133,27 +127,26 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
     Object.defineProperty(exports, "__esModule", { value: true });
     const Theme = components_2.Styles.Theme.ThemeVars;
     let ScomStepper = class ScomStepper extends components_2.Module {
-        constructor() {
-            super(...arguments);
+        constructor(parent, options) {
+            super(parent, options);
             this._activeStep = 0;
             this._steps = [];
             this._finishCaption = '';
             this._showNavButtons = true;
             this.tag = {};
+            this.deferReadyCallback = true;
         }
         get activeStep() {
-            var _a;
-            return (_a = this._activeStep) !== null && _a !== void 0 ? _a : 0;
+            return this._activeStep ?? 0;
         }
         set activeStep(step) {
-            var _a;
             const stepsLength = this.steps.length;
             let maxValue = Math.max(this._activeStep, step);
             if (maxValue >= stepsLength) {
                 maxValue = 0;
                 step = 0;
             }
-            if ((_a = this.stepElms) === null || _a === void 0 ? void 0 : _a.length) {
+            if (this.stepElms?.length) {
                 for (let i = maxValue; i >= 0; i--) {
                     const el = this.stepElms[i];
                     if (i <= step) {
@@ -180,8 +173,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             }
         }
         get steps() {
-            var _a;
-            return (_a = this._steps) !== null && _a !== void 0 ? _a : [];
+            return this._steps ?? [];
         }
         set steps(value) {
             this._steps = value;
@@ -189,18 +181,16 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             this.renderSteps();
         }
         get finishCaption() {
-            var _a;
-            return (_a = this._finishCaption) !== null && _a !== void 0 ? _a : '';
+            return this._finishCaption ?? '';
         }
         set finishCaption(value) {
-            this._finishCaption = value !== null && value !== void 0 ? value : '';
+            this._finishCaption = value ?? '';
         }
         get showNavButtons() {
-            var _a;
-            return (_a = this._showNavButtons) !== null && _a !== void 0 ? _a : true;
+            return this._showNavButtons ?? true;
         }
         set showNavButtons(value) {
-            this._showNavButtons = value !== null && value !== void 0 ? value : true;
+            this._showNavButtons = value ?? true;
             if (this.btnPrev)
                 this.btnPrev.visible = value;
             if (this.btnNext)
@@ -231,13 +221,12 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 this.style.removeProperty(name);
         }
         updateTheme() {
-            var _a, _b, _c, _d, _e, _f;
-            this.updateStyle('--text-primary', (_a = this.tag) === null || _a === void 0 ? void 0 : _a.activeTextColor);
-            this.updateStyle('--colors-primary-main', (_b = this.tag) === null || _b === void 0 ? void 0 : _b.activeBgColor);
-            this.updateStyle('--text-secondary', (_c = this.tag) === null || _c === void 0 ? void 0 : _c.inactiveTextColor);
-            this.updateStyle('--action-disabled', (_d = this.tag) === null || _d === void 0 ? void 0 : _d.inactiveBgColor);
-            this.updateStyle('--text-third', (_e = this.tag) === null || _e === void 0 ? void 0 : _e.completedBgColor);
-            this.updateStyle('--colors-success-main', (_f = this.tag) === null || _f === void 0 ? void 0 : _f.completedTextColor);
+            this.updateStyle('--text-primary', this.tag?.activeTextColor);
+            this.updateStyle('--colors-primary-main', this.tag?.activeBgColor);
+            this.updateStyle('--text-secondary', this.tag?.inactiveTextColor);
+            this.updateStyle('--action-disabled', this.tag?.inactiveBgColor);
+            this.updateStyle('--text-third', this.tag?.completedBgColor);
+            this.updateStyle('--colors-success-main', this.tag?.completedTextColor);
         }
         updateStatus(index, value) {
             this.state.setCompleted(index, value);
@@ -259,7 +248,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                         if (this.onDone)
                             await this.onDone(this);
                     }
-                    catch (_a) { }
+                    catch { }
                     this.btnNext.rightIcon.spin = false;
                     this.btnNext.rightIcon.visible = false;
                 }
@@ -293,12 +282,11 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 this.$render("i-panel", { border: { bottom: { width: 1, style: 'solid', color: Theme.divider } }, class: "step-divider" })));
         }
         renderIcon(iconData, index) {
-            var _a, _b;
             if (iconData) {
-                const width = (_a = iconData === null || iconData === void 0 ? void 0 : iconData.width) !== null && _a !== void 0 ? _a : 16;
-                const height = (_b = iconData === null || iconData === void 0 ? void 0 : iconData.height) !== null && _b !== void 0 ? _b : 16;
+                const width = iconData?.width ?? 16;
+                const height = iconData?.height ?? 16;
                 if (iconData.image) {
-                    this.$render("i-icon", { image: Object.assign({}, iconData.image), width: width, height: height });
+                    this.$render("i-icon", { image: { ...iconData.image }, width: width, height: height });
                 }
                 return this.$render("i-icon", { name: iconData.name, width: width, height: height });
             }
@@ -323,9 +311,10 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             });
             this.activeStep = this.state.activeStep;
         }
-        init() {
+        async init() {
             this._updateStep = this._updateStep.bind(this);
-            super.init();
+            await super.init();
+            await this.btnNext.ready();
             this.state = new global_1.State({ activeStep: 0, steps: [] });
             this.onChanged = this.getAttribute('onChanged', true) || this.onChanged;
             this.onBeforeNext = this.getAttribute('onBeforeNext', true) || this.onBeforeNext;
@@ -338,6 +327,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 this.activeStep = activeStep;
             this.finishCaption = this.getAttribute('finishCaption', true, '');
             this.showNavButtons = this.getAttribute('showNavButtons', true, true);
+            this.executeReadyCallback();
         }
         render() {
             return (this.$render("i-vstack", { gap: "1rem" },

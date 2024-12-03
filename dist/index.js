@@ -122,7 +122,23 @@ define("@scom/scom-stepper/global/index.ts", ["require", "exports", "@scom/scom-
     ///<amd-module name='@scom/scom-stepper/global/index.ts'/> 
     __exportStar(state_1, exports);
 });
-define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@scom/scom-stepper/index.css.ts", "@scom/scom-stepper/global/index.ts"], function (require, exports, components_2, index_css_1, global_1) {
+define("@scom/scom-stepper/translations.json.ts", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    ///<amd-module name='@scom/scom-stepper/translations.json.ts'/> 
+    exports.default = {
+        "en": {
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "zh-hant": {},
+        "vi": {
+            "next": "Tiếp theo",
+            "previous": "Về trước"
+        }
+    };
+});
+define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@scom/scom-stepper/index.css.ts", "@scom/scom-stepper/global/index.ts", "@scom/scom-stepper/translations.json.ts"], function (require, exports, components_2, index_css_1, global_1, translations_json_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const Theme = components_2.Styles.Theme.ThemeVars;
@@ -202,7 +218,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
         updateButtonText() {
             const finishCaption = this.isFinalStep && this.finishCaption;
             if (this.showNavButtons) {
-                this.btnNext.caption = finishCaption || 'Next';
+                this.btnNext.caption = finishCaption || '$next';
             }
         }
         setTag(value) {
@@ -312,6 +328,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
             this.activeStep = this.state.activeStep;
         }
         async init() {
+            this.i18n.init({ ...translations_json_1.default });
             this._updateStep = this._updateStep.bind(this);
             await super.init();
             await this.btnNext.ready();
@@ -334,9 +351,9 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                 this.$render("i-hstack", { id: "pnlStepper", class: index_css_1.stepperStyle, position: "relative" }),
                 this.$render("i-hstack", { horizontalAlignment: "space-between", verticalAlignment: "center", padding: { left: '0.5rem', right: '0.5rem' } },
                     this.$render("i-panel", null,
-                        this.$render("i-button", { id: "btnPrev", caption: "Previous", padding: { top: '0.25rem', bottom: '0.25rem', left: '0.75rem', right: '0.75rem' }, font: { color: Theme.colors.primary.contrastText }, visible: false, onClick: this.onPrevious })),
+                        this.$render("i-button", { id: "btnPrev", caption: "$previous", padding: { top: '0.25rem', bottom: '0.25rem', left: '0.75rem', right: '0.75rem' }, font: { color: Theme.colors.primary.contrastText, transform: 'capitalize' }, visible: false, onClick: this.onPrevious })),
                     this.$render("i-panel", null,
-                        this.$render("i-button", { id: "btnNext", caption: "Next", padding: { top: '0.25rem', bottom: '0.25rem', left: '0.75rem', right: '0.75rem' }, font: { color: Theme.colors.primary.contrastText }, onClick: this.onNext })))));
+                        this.$render("i-button", { id: "btnNext", caption: "$next", padding: { top: '0.25rem', bottom: '0.25rem', left: '0.75rem', right: '0.75rem' }, font: { color: Theme.colors.primary.contrastText, transform: 'capitalize' }, onClick: this.onNext })))));
         }
     };
     ScomStepper = __decorate([

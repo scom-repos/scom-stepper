@@ -52,6 +52,21 @@ declare module "@scom/scom-stepper/global/state.ts" {
 declare module "@scom/scom-stepper/global/index.ts" {
     export * from "@scom/scom-stepper/global/state.ts";
 }
+/// <amd-module name="@scom/scom-stepper/translations.json.ts" />
+declare module "@scom/scom-stepper/translations.json.ts" {
+    const _default: {
+        en: {
+            previous: string;
+            next: string;
+        };
+        "zh-hant": {};
+        vi: {
+            next: string;
+            previous: string;
+        };
+    };
+    export default _default;
+}
 /// <amd-module name="@scom/scom-stepper" />
 declare module "@scom/scom-stepper" {
     import { Container, Control, ControlElement, Module } from '@ijstech/components';

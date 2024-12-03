@@ -128,10 +128,13 @@ define("@scom/scom-stepper/translations.json.ts", ["require", "exports"], functi
     ///<amd-module name='@scom/scom-stepper/translations.json.ts'/> 
     exports.default = {
         "en": {
-            "previous": "Previous",
-            "next": "Next"
+            "next": "Next",
+            "previous": "Previous"
         },
-        "zh-hant": {},
+        "zh-hant": {
+            "next": "下一步",
+            "previous": "上一步"
+        },
         "vi": {
             "next": "Tiếp theo",
             "previous": "Về trước"

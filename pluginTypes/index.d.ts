@@ -56,10 +56,13 @@ declare module "@scom/scom-stepper/global/index.ts" {
 declare module "@scom/scom-stepper/translations.json.ts" {
     const _default: {
         en: {
-            previous: string;
             next: string;
+            previous: string;
         };
-        "zh-hant": {};
+        "zh-hant": {
+            next: string;
+            previous: string;
+        };
         vi: {
             next: string;
             previous: string;

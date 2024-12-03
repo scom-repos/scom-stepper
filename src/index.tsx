@@ -12,6 +12,7 @@ import {
 import { stepperStyle } from './index.css';
 import { IIcon, IStepperItem } from './interface';
 import { State } from './global';
+import translations from './translations.json';
 
 const Theme = Styles.Theme.ThemeVars;
 
@@ -125,7 +126,7 @@ export default class ScomStepper extends Module {
   private updateButtonText() {
     const finishCaption = this.isFinalStep && this.finishCaption;
     if (this.showNavButtons) {
-      this.btnNext.caption = finishCaption || 'Next';
+      this.btnNext.caption = finishCaption || '$next';
     }
   }
 
@@ -274,6 +275,7 @@ export default class ScomStepper extends Module {
   }
 
   async init() {
+    this.i18n.init({...translations});
     this._updateStep = this._updateStep.bind(this);
     await super.init();
     await this.btnNext.ready();
@@ -301,9 +303,9 @@ export default class ScomStepper extends Module {
           <i-panel>
             <i-button
               id="btnPrev"
-              caption="Previous"
+              caption="$previous"
               padding={{ top: '0.25rem', bottom: '0.25rem', left: '0.75rem', right: '0.75rem' }}
-              font={{color: Theme.colors.primary.contrastText}}
+              font={{color: Theme.colors.primary.contrastText, transform: 'capitalize'}}
               visible={false}
               onClick={this.onPrevious}
             ></i-button>
@@ -311,9 +313,9 @@ export default class ScomStepper extends Module {
           <i-panel>
             <i-button
               id="btnNext"
-              caption="Next"
+              caption="$next"
               padding={{ top: '0.25rem', bottom: '0.25rem', left: '0.75rem', right: '0.75rem' }}
-              font={{color: Theme.colors.primary.contrastText}}
+              font={{color: Theme.colors.primary.contrastText, transform: 'capitalize'}}
               onClick={this.onNext}
             ></i-button>
           </i-panel>

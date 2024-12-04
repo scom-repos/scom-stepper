@@ -13,6 +13,7 @@ export interface IIcon {
 
 export interface IStepperItem {
   name: string;
+  label?: string;
   icon?: IIcon;
   completed?: boolean;
   active?: boolean;

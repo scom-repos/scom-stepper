@@ -262,7 +262,7 @@ export default class ScomStepper extends Module {
           <i-panel class="text-center step-label-container" width="100%">
             <i-label
               class="step-label"
-              caption={item.name}
+              caption={item.label || item.name || ''}
               font={{ size: '0.875rem', color: Theme.text.secondary }}
             ></i-label>
           </i-panel>

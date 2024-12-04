@@ -324,7 +324,7 @@ define("@scom/scom-stepper", ["require", "exports", "@ijstech/components", "@sco
                     this.$render("i-panel", { visible: isStepIconPanelShown },
                         this.$render("i-hstack", { class: "step-icon", width: "2rem", height: "2rem", background: { color: Theme.action.disabled }, border: { radius: '50%' }, horizontalAlignment: "center", verticalAlignment: "center" }, this.renderIcon(item.icon, i))),
                     this.$render("i-panel", { class: "text-center step-label-container", width: "100%" },
-                        this.$render("i-label", { class: "step-label", caption: item.name, font: { size: '0.875rem', color: Theme.text.secondary } }))));
+                        this.$render("i-label", { class: "step-label", caption: item.label || item.name || '', font: { size: '0.875rem', color: Theme.text.secondary } }))));
                 this.pnlStepper.append(step);
                 this.stepElms.push(step);
             });
